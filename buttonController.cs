@@ -13,4 +13,19 @@ public class buttonController : MonoBehaviour
         Debug.Log("Attempting to load scene: " + sceneName);
         SceneManager.LoadScene(sceneName);
     }
+
+    public void QuitGame()
+    {
+        // If we are running in a standalone build of the game
+        #if UNITY_STANDALONE
+        // Quit the application
+        Application.Quit();
+        #endif
+
+        // If we are running in the editor
+        #if UNITY_EDITOR
+        // Stop playing the scene
+        UnityEditor.EditorApplication.isPlaying = false;
+        #endif
+    }
 }

@@ -1,16 +1,19 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using Unity.Burst.Intrinsics;
+using Unity.VisualScripting;
 using UnityEngine;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class playerMovement : MonoBehaviour
 {
+    public status status;
     float horizontalInput;
     public float moveSpeed = 5f;
     // Adjust the jump force as needed
-    public float jumpForce = 10f;
+    public float jumpForce = 5f;
     // Flag to check if the player is grounded
-
+    
     public Transform groundCheck;
     public LayerMask groundLayer;
     public float groundCheckRadius = 0.2f;
@@ -20,10 +23,27 @@ public class playerMovement : MonoBehaviour
     //Charcater faces right on start up
 
     private bool isFacingRight = true;
+    private bool isAttacking = false;
+    private bool isGrounded = true;
+    private bool isAirborne = false;
+    private bool doubleJump = true;
 
 
-    private bool isGrounded;
-    private bool isAiring;
+    
+    private float timeBtwAttack;
+    private float startTimeAttack;
+
+
+    public Transform attackPos;
+    private LayerMask enemiesLayer;
+    private float attackRange;
+    public int damage;
+
+    public KeyCode[] combo;
+    public int currentIndex = 0;
+
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -34,27 +54,80 @@ public class playerMovement : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+    { 
+        Orientation();
 
+        UpSpecial();
+
+        DoubleJump();
+
+        Jump();
+
+        HorizontalMovements();
+    }
+
+    
+
+    void StopAttacking()
+    {
+        animator.SetBool("isAttacking", false);
+    }
+
+    void Grounded()
+    {
+        animator.SetBool("isGrounded", true);
+        animator.SetBool("isAirborne", false);
+        isGrounded = true;
+        isAirborne = false;
+        doubleJump = true;
+
+    }
+    void Airborne()
+    {
+        animator.SetBool("isAirborne", true);
+        animator.SetBool("isGrounded", false);
+        isAirborne = true;
+        isGrounded = false;
+
+    }
+
+    void DoubleJump()
+    {
+        if (Input.GetKeyDown(KeyCode.UpArrow) && isAirborne == true && doubleJump == true)
+        {
+            rb.velocity = new Vector2(0.0f, 5.0f);
+            doubleJump = false;
+        }
+    }
+
+    void Jump()
+    {
+        if (Input.GetKeyDown(KeyCode.UpArrow) && isGrounded == true)
+        {
+            Airborne();
+            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        }
+    }
+
+    void Orientation()
+    {
         horizontalInput = Input.GetAxis("Horizontal");
 
         // Smoothly move the character left or right
         rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
         animator.SetFloat("xVelocity", Math.Abs(rb.velocity.x));
         animator.SetFloat("yVelocity", rb.velocity.y);
-
-        if (Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
-        {
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            animator.SetBool("isJumping", !isGrounded);
-        }
-
-        HorizontalMovements();
-        UpdateSprite();
-
-        Debug.Log(isGrounded);
     }
+
+    void UpSpecial()
+    {
+      
+
+
+    }
+
+
+
 
     void LateUpdate()
     {
@@ -67,12 +140,8 @@ public class playerMovement : MonoBehaviour
         );
     }
 
-    private void UpdateSprite()
-    {
-        // If the player is facing right, use the right facing sprite
-        // Otherwise, use the left facing sprite
-        //spriteRenderer.sprite = isFacingRight ? rightFacingSprite : leftFacingSprite;
-    }
+    
+
 
     private void HorizontalMovements()
     {
@@ -84,5 +153,16 @@ public class playerMovement : MonoBehaviour
             transform.localScale = localScale;
         }
     }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        Grounded();
+    }
+
+    private void OnTriggerExit2D(Collider2D collider)
+    {
+        Airborne();
+    }
+
 
 }

@@ -202,6 +202,6 @@ public class knightSpecialAttack : MonoBehaviour
 
     void KnightStopNeutralSpecial();
     {
-        animator.SetBool("isDownSpecialing", false);
+        animator.SetBool("isNeutralSpecialing", false);
     }
 }

@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using UnityEngine;
 
 public class characterBasicAttacks : MonoBehaviour
@@ -10,10 +9,13 @@ public class characterBasicAttacks : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
 
+
+
     // Instatiate
 
     void Start()
     {
+
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
     }
@@ -22,47 +24,53 @@ public class characterBasicAttacks : MonoBehaviour
 
     void Update()
     {
-        CheckGroundAttacks();
-        CheckAirborneAttacks();
+        if (!animator.GetBool("readyToSpecial")) {
+            CheckGroundAttacks();
+            CheckAirborneAttacks();
+        }
     }
 
    // Simple Boolean Key Combo Check (Ground)
    void CheckGroundAttacks()
     {
+
         // Ground Attacks
         if (animator.GetBool("isGrounded"))
         {
             // Weak DownGround
-            if (Input.GetKey(KeyCode.DownArrow) && Input.GetKeyDown(KeyCode.X))
+            if (Input.GetKey(KeyCode.DownArrow) && Input.GetKeyDown(KeyCode.X) && (animator.GetBool("isAttacking") == false))
                 DownGround(false);
 
-            // Weak DownGround
-            if (Input.GetKey(KeyCode.DownArrow) && Input.GetKeyDown(KeyCode.X))
+
+            // Strong DownGround
+            if (Input.GetKey(KeyCode.DownArrow) && Input.GetKeyDown(KeyCode.Z) && (animator.GetBool("isAttacking") == false))
                 DownGround(false);
-
-            // Weak UpGround
-            if (Input.GetKey(KeyCode.UpArrow) && Input.GetKeyDown(KeyCode.X))
-                UpGround(false);
-
-            // Strong UpGround
-            if (Input.GetKey(KeyCode.UpArrow) && Input.GetKeyDown(KeyCode.Z))
-                UpGround(true);
 
             // Weak SideGround
-            if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)) && Input.GetKeyDown(KeyCode.X))
+            if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)) && Input.GetKeyDown(KeyCode.X) && (animator.GetBool("isAttacking") == false))
                 SideGround(false);
 
+
             // Strong SideGround
-            if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)) && Input.GetKeyDown(KeyCode.Z))
+            if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)) && Input.GetKeyDown(KeyCode.Z) && (animator.GetBool("isAttacking") == false))
                 SideGround(true);
 
             // Weak NeutralGround
-            if (Input.GetKeyDown(KeyCode.X))
+            if (Input.GetKeyDown(KeyCode.X) && (!Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.DownArrow)) && (animator.GetBool("isAttacking") == false))
                 NeutralGround(false);
+
             // Strong NeutralGround
-            if (Input.GetKeyDown(KeyCode.Z))
+            if (Input.GetKeyDown(KeyCode.Z) && (!Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.DownArrow)) && (animator.GetBool("isAttacking") == false))
                 NeutralGround(true);
+
+            // Ground Guard
+            if (Input.GetKey(KeyCode.LeftShift) && (animator.GetBool("isAttacking") == false))
+            {
+                GroundGuard();
+            }
+           
         }
+      
     }
 
     // Simple Boolean Key Combo Check (Airborne)
@@ -71,54 +79,47 @@ public class characterBasicAttacks : MonoBehaviour
         // Airborne Attacks
         if (animator.GetBool("isAirborne"))
         {
-            // Weak UpAir
-            if (Input.GetKey(KeyCode.UpArrow) && Input.GetKeyDown(KeyCode.X))
-                UpAir(false);
-
-            // Strong UpAir
-            if (Input.GetKey(KeyCode.UpArrow) && Input.GetKeyDown(KeyCode.Z))
-                UpAir(true);
-
-            // Weak SideAir
-            if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)) && Input.GetKeyDown(KeyCode.X))
-                SideAir(false);
-
-            // Strong SideAir
-            if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)) && Input.GetKeyDown(KeyCode.Z))
-                SideAir(true);
-
-            // Weak DownAir
-            if (Input.GetKey(KeyCode.DownArrow) && Input.GetKeyDown(KeyCode.X))
-                DownAir(false);
-
-            // Strong DownAir
-            if (Input.GetKey(KeyCode.DownArrow) && Input.GetKeyDown(KeyCode.Z))
-                DownAir(true);
-
             // Weak NeutralAir
-            if (Input.GetKeyDown(KeyCode.X))
+            if (Input.GetKeyDown(KeyCode.X) && (!Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.DownArrow)) && (animator.GetBool("isAttacking") == false))
                 NeutralAir(false);
 
             // Strong NeutralAir
-            if (Input.GetKeyDown(KeyCode.Z))
+            if (Input.GetKeyDown(KeyCode.Z) && (!Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.DownArrow)) && (animator.GetBool("isAttacking") == false))
                 NeutralAir(true);
+
+            // Weak SideAir
+            if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)) && Input.GetKeyDown(KeyCode.X) && (animator.GetBool("isAttacking") == false))
+                SideAir(false);
+            // Strong SideAir
+            if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)) && Input.GetKeyDown(KeyCode.Z) && (animator.GetBool("isAttacking") == false))
+                SideAir(true);
+            // Weak UpAir
+            if (Input.GetKey(KeyCode.UpArrow) && Input.GetKeyDown(KeyCode.X) && (animator.GetBool("isAttacking") == false))
+                UpAir(false);
+            // Strong UpAir
+            if (Input.GetKey(KeyCode.UpArrow) && Input.GetKeyDown(KeyCode.Z) && (animator.GetBool("isAttacking") == false))
+                UpAir(true);
+            // Weak DownAir
+            if (Input.GetKey(KeyCode.DownArrow) && Input.GetKeyDown(KeyCode.X) && (animator.GetBool("isAttacking") == false))
+                DownAir(false);
+            // Strong DownAir
+            if (Input.GetKey(KeyCode.DownArrow) && Input.GetKeyDown(KeyCode.Z) && (animator.GetBool("isAttacking") == false))
+                DownAir(true);
+            // Air Guard
+            if (Input.GetKey(KeyCode.LeftShift) && (animator.GetBool("isAttacking") == false))
+                AirGuard();
         }
     }
 
-    """
+    /*
     Here, we are assuming our strong attacks are using the SAME animations for the regular attacks, here we will further add logic for
     determining the difference between attacks STRONG/WEAK. (I.E. damage values, knockback)
 
     Usage:
     Boolean to determine text,
     Animator changes for character sprite
-    """
-    void UpGround(bool strong)
-    {
-        Debug.Log(strong ? "Strong UpGround" : "Weak UpGround");
-        animator.SetBool("isUpGrounding", true);
-        animator.SetBool("isAttacking", true);
-    }
+    */
+
 
     void SideGround(bool strong)
     {
@@ -141,6 +142,12 @@ public class characterBasicAttacks : MonoBehaviour
         animator.SetBool("isAttacking", true);
     }
 
+    void GroundGuard()
+    {
+        animator.SetBool("isGroundGuarding", true);
+        animator.SetBool("isAttacking", true);
+    }
+
     void UpAir(bool strong)
     {
         Debug.Log(strong ? "Strong UpAir" : "Weak UpAir");
@@ -158,7 +165,7 @@ public class characterBasicAttacks : MonoBehaviour
     void NeutralAir(bool strong)
     {
         Debug.Log(strong ? "Strong NeutralAir" : "Weak NeutralAir");
-        animator.SetBool("isNeutralAiring", strong);
+        animator.SetBool("isNeutralAiring", true);
         animator.SetBool("isAttacking", true);
     }
 
@@ -169,4 +176,65 @@ public class characterBasicAttacks : MonoBehaviour
         animator.SetBool("isAttacking", true);
     }
 
+    void AirGuard()
+    {
+        animator.SetBool("isAirGuarding", true);
+        animator.SetBool("isAttacking", true);
+    }
+
+
+    void StopSideGround()
+    {
+        animator.SetBool("isSideGrounding", false);
+        animator.SetBool("isAttacking", false);
+    }
+
+    void StopDownGround()
+    {
+        animator.SetBool("isDownGrounding", false);
+        animator.SetBool("isAttacking", false);
+    }
+
+    void StopNeutralGround()
+    {
+        animator.SetBool("isNeutralGrounding", false);
+        animator.SetBool("isAttacking", false);
+    }
+
+    void StopGroundGuard()
+    {
+        animator.SetBool("isGroundGuarding", false);
+        animator.SetBool("isAttacking", false);
+    }
+
+
+    void StopUpAir()
+    {
+        animator.SetBool("isUpAiring", false);
+        animator.SetBool("isAttacking", false);
+    }
+
+    void StopSideAir()
+    {
+        animator.SetBool("isSideAiring", false);
+        animator.SetBool("isAttacking", false);
+    }
+
+    void StopNeutralAir()
+    {
+        animator.SetBool("isNeutralAiring", false);
+        animator.SetBool("isAttacking", false);
+    }
+
+    void StopDownAir()
+    {
+        animator.SetBool("isDownAiring", false);
+        animator.SetBool("isAttacking", false);
+    }
+
+    void StopAirGuard()
+    {
+        animator.SetBool("isAirGuarding", false);
+        animator.SetBool("isAttacking", false);
+    }
 }

@@ -1,18 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class knightSpecialAttack : MonoBehaviour
 {
     //Declare
+    playerMovement neededScript;
 
     Animator animator;
     private Rigidbody2D rb;
 
     private int sequenceIndex = 0;
     private float lastKeyPressTime = 0f;
-    public float maxTimeBetweenKeys = 60f;
+    public float maxTimeBetweenKeys = 15f;
 
     public float jumpForce = 5f;
     public float sideForce = 5f;
@@ -23,6 +24,7 @@ public class knightSpecialAttack : MonoBehaviour
     {
        animator = GetComponent<Animator>();
        rb = GetComponent<Rigidbody2D>();
+       neededScript = GameObject.FindGameObjectWithTag("knight").GetComponent<playerMovement>();
     }
 
     // Update is called once per frame
@@ -30,122 +32,142 @@ public class knightSpecialAttack : MonoBehaviour
     void Update()
     {
         KnightUpSpecial();
-        KnightDownSpecial();
-        KnightNeutralSpecial();
-        KnightSideSpecial();
+        if (animator.GetBool("isGrounded") == true)
+        {
+            KnightNeutralSpecial();
+            KnightSideSpecial();
+        }
     }
 
     //Series of Speical Attacks
 
     void KnightUpSpecial()
     {
-        if (sequenceIndex == 0 && Input.GetKeyDown(KeyCode.RightArrow) || sequenceIndex == 0 && Input.GetKeyDown(KeyCode.LeftArrow)) //Added Left or Right to start 'combo'
+        //switch (sequenceIndex)
+        //{
+        //    case 0:
+        //        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
+        //        {
+        //            sequenceIndex++;
+        //            lastKeyPressTime = Time.time;
+        //            Debug.Log("Up Active");
+        //        }
+        //        break;
+
+        //    case 1:
+        //        if (Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.DownArrow))
+        //        {
+        //            sequenceIndex++;
+        //            lastKeyPressTime = Time.time;
+        //            Debug.Log("Up Active");
+        //        }
+        //        break;
+
+        //    case 2:
+        //        if (Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.RightArrow))
+        //        {
+        //            sequenceIndex++;
+        //            lastKeyPressTime = Time.time;
+        //            Debug.Log("Up Active");
+        //        }
+        //        break;
+
+        //    case 3:
+        //        if (Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.UpArrow))
+        //        {
+        //            sequenceIndex++;
+        //            lastKeyPressTime = Time.time;
+        //            animator.SetBool("readyToSpecial", true);
+        //            Debug.Log("Up Active");
+        //        }
+        //        break;
+
+        //    case 4:
+        //        if (Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.X))
+        //        {
+        //            animator.SetBool("isUpSpecialing", true);
+        //            animator.SetBool("readyToSpecial", false);
+        //            animator.SetBool("isAttacking", true);
+
+        //            neededScript.SpecialBoost();
+
+        //            sequenceIndex = 0; // Reset the sequence after successful activation
+        //            Debug.Log("Up Active");
+        //        }
+        //        break;
+        //}
+
+        //if (sequenceIndex > 0 && Time.time - lastKeyPressTime > maxTimeBetweenKeys)
+        //{
+        //    // Reset the sequence if too much time has passed between keys, except when sequenceIndex is 0.
+        //    animator.SetBool("readyToSpecial", false);
+        //    sequenceIndex = 0;
+        //}
+
+        if (sequenceIndex == 0 && (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow))) //Added Left or Right to start 'combo'
         {
             sequenceIndex++;
             lastKeyPressTime = Time.time;
+            Debug.Log("Up Active");
         }
         else if (sequenceIndex == 1 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.DownArrow))
         {
             sequenceIndex++;
             lastKeyPressTime = Time.time;
+            Debug.Log("Up Active");
         }
         else if (sequenceIndex == 2 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.RightArrow))
         {
             sequenceIndex++;
             lastKeyPressTime = Time.time;
+            Debug.Log("Up Active");
         }
         else if (sequenceIndex == 3 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.UpArrow))
         {
             sequenceIndex++;
             lastKeyPressTime = Time.time;
+            animator.SetBool("readyToSpecial", true);
+            Debug.Log("Up Active");
         }
         else if (sequenceIndex == 4 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.X))
         {
             animator.SetBool("isUpSpecialing", true);
+            animator.SetBool("readyToSpecial", false);
+            animator.SetBool("isAttacking", true);
+
+            neededScript.SpecialBoost();
 
             sequenceIndex = 0; // Reset the sequence after successful activation
             Debug.Log("Up Active");
         }
         else if (Time.time - lastKeyPressTime > maxTimeBetweenKeys)
         {
+            animator.SetBool("readyToSpecial", false);
             sequenceIndex = 0; // Reset the sequence if too much time has passed between keys
-
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse); // Apply force upwards
         }
     }
 
     void KnightStopUpSpecialAttack()
     {
         animator.SetBool("isUpSpecialing", false);
+        animator.SetBool("isAttacking", false);
     }
 
-    void KnightDownSpecial()
-    {
-        if (sequenceIndex == 0 && Input.GetKeyDown(KeyCode.RightArrow) || sequenceIndex == 0 && Input.GetKeyDown(KeyCode.LeftArrow)) //Added Left or Right to start 'combo'
-        {
-            sequenceIndex++;
-            lastKeyPressTime = Time.time;
-        }
-        else if (sequenceIndex == 1 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            sequenceIndex++;
-            lastKeyPressTime = Time.time;
-        }
-        else if (sequenceIndex == 2 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            sequenceIndex++;
-            lastKeyPressTime = Time.time;
-        }
-        else if (sequenceIndex == 3 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            sequenceIndex++;
-            lastKeyPressTime = Time.time;
-        }
-        else if (sequenceIndex == 4 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.X))
-        {
-            animator.SetBool("isDownSpecialing", true);
 
-            sequenceIndex = 0; // Reset the sequence after successful activation
-            Debug.Log("Down Active");
-
-        }
-        else if (Time.time - lastKeyPressTime > maxTimeBetweenKeys)
-        {
-            sequenceIndex = 0; // Reset the sequence if too much time has passed between keys
-            rb.velocity = new Vector2(0.0f, 10.0f);
-        }
-    }
-
-    void KnightStopDownSpecialAttack()
-    {
-        animator.SetBool("isDownSpecialing", false);
-    }
-
-    void KnightSideSpecial()
+    void KnightNeutralSpecial()
     {
 
-
-        if (sequenceIndex == 0 && Input.GetKeyDown(KeyCode.RightArrow) || sequenceIndex == 0 && Input.GetKeyDown(KeyCode.LeftArrow)) //Added Left or Right to start 'combo'
+        if (sequenceIndex == 0 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.DownArrow)) //Added Left or Right to start 'combo'
         {
             sequenceIndex++;
             lastKeyPressTime = Time.time;
         }
-        else if (sequenceIndex == 1 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.DownArrow))
+        else if (sequenceIndex == 1 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow)))
         {
             sequenceIndex++;
             lastKeyPressTime = Time.time;
         }
-        else if (sequenceIndex == 2 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            sequenceIndex++;
-            lastKeyPressTime = Time.time;
-        }
-        else if (sequenceIndex == 3 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            sequenceIndex++;
-            lastKeyPressTime = Time.time;
-        }
-        else if (sequenceIndex == 4 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.X))
+        else if (sequenceIndex == 2 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.Z) ))
         {
             animator.SetBool("isSideSpecialing", true);
 
@@ -164,9 +186,10 @@ public class knightSpecialAttack : MonoBehaviour
         animator.SetBool("isSideSpecialing", false);
     }
 
-    void KnightNeutralSpecial();
+    void KnightSideSpecial()
     {
-        if (sequenceIndex == 0 && Input.GetKeyDown(KeyCode.RightArrow))
+        
+        if (sequenceIndex == 0 && (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow)))
         {
             sequenceIndex++;
             lastKeyPressTime = Time.time;
@@ -176,17 +199,12 @@ public class knightSpecialAttack : MonoBehaviour
             sequenceIndex++;
             lastKeyPressTime = Time.time;
         }
-        else if (sequenceIndex == 2 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.RightArrow))
+        else if (sequenceIndex == 2 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
             sequenceIndex++;
             lastKeyPressTime = Time.time;
         }
-        else if (sequenceIndex == 3 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            sequenceIndex++;
-            lastKeyPressTime = Time.time;
-        }
-        else if (sequenceIndex == 4 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.X))
+        else if (sequenceIndex == 3 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.Z)))
         {
             animator.SetBool("isNeutralSpecialing", true);
 
@@ -200,7 +218,7 @@ public class knightSpecialAttack : MonoBehaviour
         }
     }
 
-    void KnightStopNeutralSpecial();
+    void KnightStopNeutralSpecial()
     {
         animator.SetBool("isNeutralSpecialing", false);
     }

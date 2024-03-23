@@ -54,16 +54,19 @@ public class playerMovement : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    { 
-        Orientation();
+    {
+        if (!animator.GetBool("isAttacking") || (animator.GetBool("isAirborne")) && animator.GetBool("isAttacking"))
+        {
+            Orientation();
+        }
 
-        UpSpecial();
+        if (!animator.GetBool("isAttacking"))
+        {
+            DoubleJump();
+            Jump();
+            HorizontalMovements();
+        }
 
-        DoubleJump();
-
-        Jump();
-
-        HorizontalMovements();
     }
 
     
@@ -100,7 +103,7 @@ public class playerMovement : MonoBehaviour
         }
     }
 
-    void Jump()
+    public void Jump()
     {
         if (Input.GetKeyDown(KeyCode.UpArrow) && isGrounded == true)
         {
@@ -108,6 +111,8 @@ public class playerMovement : MonoBehaviour
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         }
     }
+
+    
 
     void Orientation()
     {
@@ -118,16 +123,6 @@ public class playerMovement : MonoBehaviour
         animator.SetFloat("xVelocity", Math.Abs(rb.velocity.x));
         animator.SetFloat("yVelocity", rb.velocity.y);
     }
-
-    void UpSpecial()
-    {
-      
-
-
-    }
-
-
-
 
     void LateUpdate()
     {
@@ -154,6 +149,7 @@ public class playerMovement : MonoBehaviour
         }
     }
 
+
     void OnTriggerEnter2D(Collider2D collision)
     {
         Grounded();
@@ -164,5 +160,9 @@ public class playerMovement : MonoBehaviour
         Airborne();
     }
 
+    public void SpecialBoost()
+    {
+        rb.velocity = new Vector2(0.0f, 10.0f);
+    }
 
 }

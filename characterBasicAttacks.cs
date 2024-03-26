@@ -9,8 +9,6 @@ public class characterBasicAttacks : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
 
-
-
     // Instatiate
 
     void Start()
@@ -28,6 +26,8 @@ public class characterBasicAttacks : MonoBehaviour
             CheckGroundAttacks();
             CheckAirborneAttacks();
         }
+
+       
     }
 
    // Simple Boolean Key Combo Check (Ground)
@@ -123,21 +123,18 @@ public class characterBasicAttacks : MonoBehaviour
 
     void SideGround(bool strong)
     {
-        Debug.Log(strong ? "Strong SideGround" : "Weak SideGround");
         animator.SetBool("isSideGrounding", true);
         animator.SetBool("isAttacking", true);
     }
 
     void DownGround(bool strong)
     {
-        Debug.Log(strong ? "Strong DownGround" : "Weak DownGround");
         animator.SetBool("isDownGrounding", true);
         animator.SetBool("isAttacking", true);
     }
 
     void NeutralGround(bool strong)
     {
-        Debug.Log(strong ? "Strong NeutralGround" : "Weak NeutralGround");
         animator.SetBool("isNeutralGrounding", true);
         animator.SetBool("isAttacking", true);
     }
@@ -150,28 +147,24 @@ public class characterBasicAttacks : MonoBehaviour
 
     void UpAir(bool strong)
     {
-        Debug.Log(strong ? "Strong UpAir" : "Weak UpAir");
         animator.SetBool("isUpAiring", true);
         animator.SetBool("isAttacking", true);
     }
 
     void SideAir(bool strong)
     {
-        Debug.Log(strong ? "Strong SideAir" : "Weak SideAir");
         animator.SetBool("isSideAiring", true);
         animator.SetBool("isAttacking", true);
     }
 
     void NeutralAir(bool strong)
     {
-        Debug.Log(strong ? "Strong NeutralAir" : "Weak NeutralAir");
         animator.SetBool("isNeutralAiring", true);
         animator.SetBool("isAttacking", true);
     }
 
     void DownAir(bool strong)
     {
-        Debug.Log(strong ? "Strong DownAir" : "Weak DownAir");
         animator.SetBool("isDownAiring", true);
         animator.SetBool("isAttacking", true);
     }
@@ -237,4 +230,6 @@ public class characterBasicAttacks : MonoBehaviour
         animator.SetBool("isAirGuarding", false);
         animator.SetBool("isAttacking", false);
     }
+
+    
 }

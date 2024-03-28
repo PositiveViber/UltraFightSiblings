@@ -54,12 +54,13 @@ public class collision : MonoBehaviour
 
             }
         }
-        void OnDrawGizmosSelected()
-        {
-            if (attackPos == null)
-                return;
+        
+    }
+    void OnDrawGizmosSelected()
+    {
+        if (attackPos == null)
+            return;
 
-            Gizmos.DrawWireSphere(attackPos.position, attackRange);
-        }
+        Gizmos.DrawWireSphere(attackPos.position, attackRange);
     }
 }

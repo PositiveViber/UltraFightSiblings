@@ -22,12 +22,8 @@ public class characterBasicAttacks : MonoBehaviour
 
     void Update()
     {
-        if (!animator.GetBool("readyToSpecial")) {
             CheckGroundAttacks();
             CheckAirborneAttacks();
-        }
-
-       
     }
 
    // Simple Boolean Key Combo Check (Ground)
@@ -230,6 +226,5 @@ public class characterBasicAttacks : MonoBehaviour
         animator.SetBool("isAirGuarding", false);
         animator.SetBool("isAttacking", false);
     }
-
     
 }

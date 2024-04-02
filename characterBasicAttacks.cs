@@ -171,6 +171,13 @@ public class characterBasicAttacks : MonoBehaviour
         animator.SetBool("isAttacking", true);
     }
 
+    void StopGuard()
+    {
+        animator.SetBool("isGroundGuarding", false);
+        animator.SetBool("isAirGuarding", false);
+        animator.SetBool("isAttacking", false);
+    }
+
 
     void StopSideGround()
     {

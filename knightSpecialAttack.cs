@@ -24,7 +24,7 @@ public class knightSpecialAttack : MonoBehaviour
     {
        animator = GetComponent<Animator>();
        rb = GetComponent<Rigidbody2D>();
-       neededScript = GameObject.FindGameObjectWithTag("knight").GetComponent<playerMovement>();
+       neededScript = GameObject.FindGameObjectWithTag("Player").GetComponent<playerMovement>();
     }
 
     // Update is called once per frame
@@ -108,26 +108,22 @@ public class knightSpecialAttack : MonoBehaviour
         {
             sequenceIndex++;
             lastKeyPressTime = Time.time;
-            Debug.Log("Up Active");
         }
         else if (sequenceIndex == 1 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.DownArrow))
         {
             sequenceIndex++;
             lastKeyPressTime = Time.time;
-            Debug.Log("Up Active");
         }
         else if (sequenceIndex == 2 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.RightArrow))
         {
             sequenceIndex++;
             lastKeyPressTime = Time.time;
-            Debug.Log("Up Active");
         }
         else if (sequenceIndex == 3 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.UpArrow))
         {
             sequenceIndex++;
             lastKeyPressTime = Time.time;
             animator.SetBool("readyToSpecial", true);
-            Debug.Log("Up Active");
         }
         else if (sequenceIndex == 4 && Time.time - lastKeyPressTime <= maxTimeBetweenKeys && Input.GetKeyDown(KeyCode.X))
         {
@@ -138,7 +134,6 @@ public class knightSpecialAttack : MonoBehaviour
             neededScript.SpecialBoost();
 
             sequenceIndex = 0; // Reset the sequence after successful activation
-            Debug.Log("Up Active");
         }
         else if (Time.time - lastKeyPressTime > maxTimeBetweenKeys)
         {

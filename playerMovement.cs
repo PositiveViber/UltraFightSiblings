@@ -17,9 +17,9 @@ public class playerMovement : MonoBehaviour
     public Transform groundCheck;
     public LayerMask groundLayer;
     public float groundCheckRadius = 0.2f;
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
 
-    private Animator animator;
+    public Animator animator;
     //Charcater faces right on start up
 
     private bool isFacingRight = true;
@@ -53,25 +53,28 @@ public class playerMovement : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if (!animator.GetBool("isAttacking") || (animator.GetBool("isAirborne")) && animator.GetBool("isAttacking"))
+    void Update()    
         {
-            Orientation();
-        }
+        if (!animator.GetBool("appliedKnockback"))
+        { 
+            if (!animator.GetBool("isAttacking") || (animator.GetBool("isAirborne")) && animator.GetBool("isAttacking"))
+            {
+                Orientation();
+            }
 
-        if (!animator.GetBool("isAttacking"))
-        {
-            DoubleJump();
-            Jump();
-            HorizontalMovements();
-        }
+            if (!animator.GetBool("isAttacking"))
+            {
+                DoubleJump();
+                Jump();
+                HorizontalMovements();
+            }
 
+        }
     }
 
-    
 
-    void StopAttacking()
+
+void StopAttacking()
     {
         animator.SetBool("isAttacking", false);
     }
@@ -108,7 +111,7 @@ public class playerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.UpArrow) && isGrounded == true)
         {
             Airborne();
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            rb.velocity = new Vector2(0.0f, 5.0f);
         }
     }
 

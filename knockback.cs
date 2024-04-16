@@ -8,18 +8,19 @@ public class knockback : MonoBehaviour
     public Vector2 previousForce;
     public Vector2 force = new Vector2 (0.0f, 0.0f);
     Animator animator;
+    public static int playerDamage;
 
     // Example method to calculate knockback
-    public Vector2 CalculateKnockback(string move, Vector3 attackerPosition, Vector3 enemyPosition)
+    public Vector2 CalculateKnockback(string move, Vector3 attackerPosition, Vector3 enemyPosition, int damage, float multiplier)
     {
-        float forceMagnitude = DetermineForceByMove(move);
+        float forceMagnitude = DetermineForceByMove(damage, multiplier);
         Vector2 knockbackDirection = (enemyPosition - attackerPosition).normalized;
 
         switch (move)
         {
             case "NeutralAir":
                 // For a neutral air, you might want to knock the enemy slightly upwards and away
-                knockbackDirection += Vector2.up * .5f; // Adjust the multiplier to get the desired angle
+                knockbackDirection += (Vector2.up  * .5f); // Adjust the multiplier to get the desired angle
                 break;
             case "SideAir":
                 // For an uppercut, you would want a stronger upward force
@@ -67,31 +68,18 @@ public class knockback : MonoBehaviour
                 force = new Vector2 (0.0f, 0.0f);
             }
         }
+        playerDamage = animator.GetInteger("damage");
     }
 
-    private float DetermineForceByMove(string move)
+    private float DetermineForceByMove(int damage, float multiplier)
     {
-        switch (move)
-        {
-            case "NeutralAir":
-                return 1.5f; // Some arbitrary force value
-            case "SideAir":
-                return 1.3f;
-            case "UpAir":
-                return 5.1f;
-            case "DownAir":
-                return 0.7f;
-            case "DownGround":
-                return 1.0f;
-            case "NeutralGround":
-                return 0.5f;
-            case "SideGround":
-                return 0.3f;
-            default:
-                return 0f;
-        }
+        return (damage/4.5f) * multiplier;
     }
 
+    public int showDamage()
+    {
+        return animator.GetInteger("damage");
+    }
     void calculateForce ()
     {
         force = force * .99f;

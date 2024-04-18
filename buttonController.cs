@@ -10,6 +10,10 @@ public class buttonController : MonoBehaviour
     private GameObject[] playerSprites;
     private Vector3[] startingPositions;
     public string characterChoice;
+    public static bool knightPicked;
+    public static bool warriorPicked;
+    public static bool bladekeeperPicked;
+    public static bool maulerPicked;
     public void Activate()
     {
         // Load the scene with the given name
@@ -17,41 +21,59 @@ public class buttonController : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
-    void playerChoicePractice()
+    public void playerChoiceMainGame()
     {
         if (characterChoice.Equals("knight"))
         {
-            DestroyAllWithTag("warrior");
-            DestroyAllWithTag("bladekeeper");
-            DestroyAllWithTag("crystalmauler");
-            //knight.addtag("player");
+            knightPicked = !knightPicked;
         }
         if (characterChoice.Equals("warrior"))
         {
-            DestroyAllWithTag("knight");
-            DestroyAllWithTag("bladekeeper");
-            DestroyAllWithTag("crystalmauler");
+            warriorPicked = !warriorPicked;
         }
         if (characterChoice.Equals("bladekeeper"))
         {
-            DestroyAllWithTag("knight");
-            DestroyAllWithTag("warrior");
-            DestroyAllWithTag("crystalmauler");
+            bladekeeperPicked = !bladekeeperPicked;
 
         }
         if (characterChoice.Equals("crystalmauler"))
         {
-            DestroyAllWithTag("knight");
-            DestroyAllWithTag("warrior");
-            DestroyAllWithTag("bladekeeper");
+            maulerPicked = !maulerPicked;
+        }
+        else
+        {
+            Debug.Log("cry");
+        }
+
+        if (!knightPicked)
+        DestroyAllWithTag("bladekeeper");
+    }
+
+    public void playerChoicePractice()
+    {
+        if (characterChoice.Equals("knight"))
+        {
+            knightPicked = !knightPicked;
+        }
+        if (characterChoice.Equals("warrior"))
+        {
+            warriorPicked = !warriorPicked;
+        }
+        if (characterChoice.Equals("bladekeeper"))
+        {
+            bladekeeperPicked = !bladekeeperPicked;
+
+        }
+        if (characterChoice.Equals("crystalmauler"))
+        {
+            maulerPicked = !maulerPicked;
         }
         else
         {
             Debug.Log("cry");
         }
     }
-
-    public void QuitGame()
+        public void QuitGame()
     {
         // If we are running in a standalone build of the game
         #if UNITY_STANDALONE

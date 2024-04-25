@@ -84,4 +84,21 @@ public class knockback : MonoBehaviour
     {
         force = force * .99f;
     }
+
+    void setAttacksFalse ()
+    {
+        if (animator.GetBool("isAttacking"))
+        {
+            animator.SetBool("isAttacking", false);
+            animator.SetBool("isDownGrounding", false);
+            animator.SetBool("isDownAiring", false);
+            animator.SetBool("isNeutralAiring", false);
+            animator.SetBool("isUpAiring", false);
+            animator.SetBool("isSideGrounding", false);
+            animator.SetBool("isNeutralGrounding", false);
+            animator.SetBool("isGroundGuarding", false);
+            animator.SetBool("isAirGuarding", false);
+            animator.SetBool("isSideAiring", false);
+        }
+    }
 }

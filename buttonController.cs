@@ -5,15 +5,17 @@ using UnityEngine.SceneManagement;
 
 public class buttonController : MonoBehaviour
 {
+    playerMovement playerMovement;
     public string sceneName; // Assign the name of the scene you want to load in the Inspector
     public GameObject[] sprites; // Assign your sprite GameObjects in the inspector
     private GameObject[] playerSprites;
     private Vector3[] startingPositions;
-    public string characterChoice;
-    public static bool knightPicked;
-    public static bool warriorPicked;
-    public static bool bladekeeperPicked;
-    public static bool maulerPicked;
+    public string characterChoice1;
+    public string characterChoice2;
+    public static bool knightPicked = false;
+    public static bool warriorPicked = false;
+    public static bool bladekeeperPicked = false;
+    public static bool maulerPicked = false;
     public void Activate()
     {
         // Load the scene with the given name
@@ -23,48 +25,107 @@ public class buttonController : MonoBehaviour
 
     public void playerChoiceMainGame()
     {
-        if (characterChoice.Equals("knight"))
+        if (characterChoice1.Equals("knight") && characterChoice2.Equals("crystalmauler"))
         {
             knightPicked = !knightPicked;
+            DestroyAllWithTag("bladekeeper");
+
         }
-        if (characterChoice.Equals("warrior"))
+        else if (characterChoice1.Equals("warrior") && characterChoice2.Equals("crystalmauler"))
         {
             warriorPicked = !warriorPicked;
         }
-        if (characterChoice.Equals("bladekeeper"))
+        else if (characterChoice1.Equals("bladekeeper") && characterChoice2.Equals("crystalmauler"))
         {
             bladekeeperPicked = !bladekeeperPicked;
 
         }
-        if (characterChoice.Equals("crystalmauler"))
+        else if (characterChoice1.Equals("crystalmauler") && characterChoice2.Equals("crystalmauler"))
         {
             maulerPicked = !maulerPicked;
         }
-        else
-        {
-            Debug.Log("cry");
-        }
 
-        if (!knightPicked)
-        DestroyAllWithTag("bladekeeper");
-    }
 
-    public void playerChoicePractice()
-    {
-        if (characterChoice.Equals("knight"))
+
+        if (characterChoice1.Equals("knight") && characterChoice2.Equals("knight"))
         {
             knightPicked = !knightPicked;
+            DestroyAllWithTag("bladekeeper");
+
         }
-        if (characterChoice.Equals("warrior"))
+        else if (characterChoice1.Equals("warrior") && characterChoice2.Equals("knight"))
         {
             warriorPicked = !warriorPicked;
         }
-        if (characterChoice.Equals("bladekeeper"))
+        else if (characterChoice1.Equals("bladekeeper") && characterChoice2.Equals("knight"))
         {
             bladekeeperPicked = !bladekeeperPicked;
 
         }
-        if (characterChoice.Equals("crystalmauler"))
+        else if (characterChoice1.Equals("crystalmauler") && characterChoice2.Equals("knight"))
+        {
+            maulerPicked = !maulerPicked;
+        }
+
+
+        if (characterChoice1.Equals("knight") && characterChoice2.Equals("warrior"))
+        {
+            knightPicked = !knightPicked;
+            DestroyAllWithTag("bladekeeper");
+
+        }
+        else if (characterChoice1.Equals("warrior") && characterChoice2.Equals("warrior"))
+        {
+            warriorPicked = !warriorPicked;
+        }
+        else if (characterChoice1.Equals("bladekeeper") && characterChoice2.Equals("warrior"))
+        {
+            bladekeeperPicked = !bladekeeperPicked;
+
+        }
+        else if (characterChoice1.Equals("crystalmauler") && characterChoice2.Equals("warrior"))
+        {
+            maulerPicked = !maulerPicked;
+        }
+
+
+        if (characterChoice1.Equals("knight") && characterChoice2.Equals("knight"))
+        {
+            knightPicked = !knightPicked;
+            DestroyAllWithTag("bladekeeper");
+
+        }
+        else if (characterChoice1.Equals("warrior") && characterChoice2.Equals("knight"))
+        {
+            warriorPicked = !warriorPicked;
+        }
+        else if (characterChoice1.Equals("bladekeeper") && characterChoice2.Equals("knight"))
+        {
+            bladekeeperPicked = !bladekeeperPicked;
+
+        }
+        else if (characterChoice1.Equals("crystalmauler") && characterChoice2.Equals("knight"))
+        {
+            maulerPicked = !maulerPicked;
+        }
+
+    }
+    public void playerChoicePractice()
+    {
+        if (characterChoice1.Equals("knight"))
+        {
+            knightPicked = !knightPicked;
+        }
+        if (characterChoice1.Equals("warrior"))
+        {
+            warriorPicked = !warriorPicked;
+        }
+        if (characterChoice1.Equals("bladekeeper"))
+        {
+            bladekeeperPicked = !bladekeeperPicked;
+
+        }
+        if (characterChoice1.Equals("crystalmauler"))
         {
             maulerPicked = !maulerPicked;
         }
@@ -90,20 +151,8 @@ public class buttonController : MonoBehaviour
 
     void Start()
     {
-        playerSprites = GameObject.FindGameObjectsWithTag("Player");
-        // Initialize the startingPositions array with the same length as the sprites array
-        startingPositions = new Vector3[playerSprites.Length];
+        playerMovement.LoadSpriteData();
 
-        // Store the starting positions of each sprite
-        for (int i = 0; i < playerSprites.Length; i++)
-        {
-            if (playerSprites[i] != null)
-            {
-                startingPositions[i] = playerSprites[i].transform.position;
-            }
-        }
-        if (sceneName.Equals("PracticeScene"))
-            playerChoicePractice();
     }
 
     // Call this method to respawn all sprites
@@ -136,4 +185,6 @@ public class buttonController : MonoBehaviour
             Destroy(obj);
         }
     }
+
+    
 }

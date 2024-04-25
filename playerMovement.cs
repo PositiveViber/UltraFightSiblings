@@ -3,10 +3,18 @@ using System.Collections;
 using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class playerMovement : MonoBehaviour
 {
+    private Gamepad gamepad;
+
+    buttonController button;
+    private Vector3[] startingPositions;
+    public int playerStock = 0;
+    public GameObject[] sprites; // Assign your sprite GameObjects in the inspector
+    private GameObject[] playerSprites;
     public status status;
     float horizontalInput;
     public float moveSpeed = 5f;
@@ -48,8 +56,26 @@ public class playerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        playerSprites = GameObject.FindGameObjectsWithTag("Player");
+        // Initialize the startingPositions array with the same length as the sprites array
+        startingPositions = new Vector3[playerSprites.Length];
+
+        // Store the starting positions of each sprite
+        for (int i = 0; i < playerSprites.Length; i++)
+        {
+            if (playerSprites[i] != null)
+            {
+                startingPositions[i] = playerSprites[i].transform.position;
+            }
+        }
+
+
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+
+        if (gamepad == null) return;
+
+
     }
 
     // Update is called once per frame
@@ -71,9 +97,27 @@ public class playerMovement : MonoBehaviour
 
         }
     }
+    private void OnEnable()
+    {
+        // Subscribe to the event that is called when a device is connected
+        InputSystem.onDeviceChange += OnDeviceChange;
+    }
 
+    public void LoadSpriteData()
+    {
+        playerSprites= GameObject.FindGameObjectsWithTag("Player");
+        // Initialize the startingPositions array with the same length as the sprites array
+        startingPositions = new Vector3[playerSprites.Length];
 
-
+        // Store the starting positions of each sprite
+        for (int i = 0; i < playerSprites.Length; i++)
+        {
+            if (playerSprites[i] != null)
+            {
+                startingPositions[i] = playerSprites[i].transform.position;
+            }
+        }
+    }
 void StopAttacking()
     {
         animator.SetBool("isAttacking", false);
@@ -113,9 +157,22 @@ void StopAttacking()
             Airborne();
             rb.velocity = new Vector2(0.0f, 5.0f);
         }
+
     }
 
-    
+
+    private void OnDeviceChange(InputDevice device, InputDeviceChange change)
+    {
+        if (change == InputDeviceChange.Added)
+        {
+            gamepad = device as Gamepad;
+        }
+        else if (change == InputDeviceChange.Removed && device == gamepad)
+        {
+            // Handle gamepad disconnection
+            gamepad = null;
+        }
+    }
 
     void Orientation()
     {
@@ -129,16 +186,21 @@ void StopAttacking()
 
     void LateUpdate()
     {
+        BoundCheck();
+    }
+
+    public void BoundCheck()
+    {
         // Screen bounds check
         Vector3 screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
         transform.position = new Vector3(
-            Mathf.Clamp(transform.position.x, -screenBounds.x, screenBounds.x),
-            Mathf.Clamp(transform.position.y, -screenBounds.y, screenBounds.y),
+            Mathf.Clamp(transform.position.x ,-screenBounds.x, screenBounds.x),
+            Mathf.Clamp(transform.position.y, -screenBounds.y -1f, screenBounds.y),
             transform.position.z
         );
-    }
 
-    
+
+    }
 
 
     private void HorizontalMovements()
@@ -168,4 +230,25 @@ void StopAttacking()
         rb.velocity = new Vector2(0.0f, 10.0f);
     }
 
+    public void RespawnSprites()
+    {
+        foreach (var player in playerSprites)
+        {
+            // Find the index of the player to get the correct starting position
+            int index = System.Array.IndexOf(playerSprites, player);
+            if (index != -1)
+            {
+                player.transform.position = startingPositions[index];
+                player.transform.rotation = Quaternion.identity;
+                player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+                
+                Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
+                if (rb != null)
+                {
+                    rb.velocity = Vector2.zero;
+                    rb.angularVelocity = 0f; // If you also want to reset any rotational velocity
+                }
+            }
+        }
+    }
 }
